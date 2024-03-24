@@ -43,17 +43,19 @@ def main() -> None:
     # propagate(chunk, chunk.tiles[50][50])
 
     running = True
-    first_run: bool = True
     all_sprites = pygame.sprite.Group()
+    chunk: Chunk = Chunk(chunk_size)
+    for tile in chunk.tile_iter(collapsed=True):
+        all_sprites.add(tile)
+
     while running:
         clock.tick(120)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-            if first_run or (event.type == pygame.MOUSEBUTTONDOWN and event.button == 1):
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 chunk: Chunk = Chunk(chunk_size)
-                first_run = False
 
                 for tile in chunk.tile_iter(collapsed=True):
                     all_sprites.add(tile)

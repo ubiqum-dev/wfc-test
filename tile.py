@@ -1,18 +1,18 @@
 from enum import StrEnum
 from functools import reduce
 from random import choice, choices
-from typing import Self, Iterator, Literal
+from typing import Iterator, Literal
 
 import pygame
 from pygame.sprite import Sprite
 
 
 class Surface(StrEnum):
-    GRASS: str = "G"
-    WATER: str = "W"
-    FOREST: str = "F"
-    SWAMP: str = "S"
-    SAND: str = "s"
+    GRASS: str = "grass"
+    WATER: str = "water"
+    FOREST: str = "forest"
+    SWAMP: str = "swamp"
+    SAND: str = "sand"
 
 
 connections = {
@@ -41,8 +41,8 @@ colors_night = {
 
 WEIGHTS = {
     Surface.GRASS: 70,
-    Surface.FOREST: 12,
-    Surface.SWAMP: 10,
+    Surface.FOREST: 22,
+    Surface.SWAMP: 20,
     Surface.WATER: 20,
     Surface.SAND: 22,
 }
@@ -83,9 +83,9 @@ class Tile(Sprite):
 
         return True
 
-    def collapse(self, value: Surface | None = None) -> Self:
-        if value and value in self.possible_values:
-            self.value = value
+    def collapse(self, collapse_value: Surface | None = None) -> None:
+        if collapse_value and (collapse_value in self.possible_values):
+            self.value = collapse_value
         else:
             list_possible_values = list(self.possible_values)
             weights: list[int] = [WEIGHTS[v] for v in list_possible_values]
@@ -93,7 +93,6 @@ class Tile(Sprite):
 
         self.possible_values = {self.value}
         self.image.fill(self.colors[self.value])
-        return self
 
     def possible_neighbor_values(self) -> set[Surface]:
         all_values: list[set[Surface]] = []
