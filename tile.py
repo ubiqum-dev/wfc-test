@@ -8,7 +8,7 @@ from pygame.sprite import Sprite
 
 
 class Surface(StrEnum):
-    EMPTY: str = "e"
+    GRASS: str = "G"
     WATER: str = "W"
     FOREST: str = "F"
     SWAMP: str = "S"
@@ -16,22 +16,22 @@ class Surface(StrEnum):
 
 
 connections = {
-    Surface.EMPTY: {Surface.EMPTY, Surface.FOREST, Surface.SAND},
-    Surface.FOREST: {Surface.FOREST, Surface.EMPTY, Surface.SWAMP},
+    Surface.GRASS: {Surface.GRASS, Surface.FOREST, Surface.SAND, Surface.WATER},
+    Surface.FOREST: {Surface.FOREST, Surface.GRASS, Surface.SWAMP},
     Surface.SWAMP: {Surface.SWAMP, Surface.FOREST},
-    Surface.WATER: {Surface.WATER, Surface.SAND},
-    Surface.SAND: {Surface.SAND, Surface.WATER, Surface.EMPTY},
+    Surface.WATER: {Surface.WATER, Surface.SAND, Surface.GRASS},
+    Surface.SAND: {Surface.SAND, Surface.WATER, Surface.GRASS},
 }
 
 colors_day = {
-    Surface.EMPTY: (0, 255, 0),
+    Surface.GRASS: (0, 255, 0),
     Surface.FOREST: (1, 50, 32),
     Surface.SWAMP: (81, 55, 67),
     Surface.WATER: (20, 20, 255),
     Surface.SAND: (194, 178, 128),
 }
 colors_night = {
-    Surface.EMPTY: (0, 150, 0),
+    Surface.GRASS: (0, 150, 0),
     Surface.FOREST: (1, 0, 12),
     Surface.SWAMP: (31, 5, 17),
     Surface.WATER: (0, 0, 205),
@@ -40,7 +40,7 @@ colors_night = {
 
 
 WEIGHTS = {
-    Surface.EMPTY: 70,
+    Surface.GRASS: 70,
     Surface.FOREST: 12,
     Surface.SWAMP: 10,
     Surface.WATER: 20,
@@ -78,7 +78,7 @@ class Tile(Sprite):
 
         self.possible_values = _values
 
-        if len(self.possible_values) == 1:  # collapsed
+        if len(self.possible_values) == 1:  # no more choices == collapsed
             self.collapse()
 
         return True
@@ -87,10 +87,9 @@ class Tile(Sprite):
         if value and value in self.possible_values:
             self.value = value
         else:
-            # l = list(self.possible_values)
-            weights: list[int] = [WEIGHTS[v] for v in self.possible_values]
-            # self.value = choice(l)
-            self.value = choices(list(self.possible_values), weights=weights)[0]
+            list_possible_values = list(self.possible_values)
+            weights: list[int] = [WEIGHTS[v] for v in list_possible_values]
+            self.value = choices(list_possible_values, weights=weights)[0]
 
         self.possible_values = {self.value}
         self.image.fill(self.colors[self.value])
