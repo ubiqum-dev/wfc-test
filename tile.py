@@ -16,10 +16,10 @@ class Surface(StrEnum):
 
 
 connections = {
-    Surface.GRASS: {Surface.GRASS, Surface.FOREST, Surface.SAND, Surface.WATER},
+    Surface.GRASS: {Surface.GRASS, Surface.FOREST, Surface.SAND},
     Surface.FOREST: {Surface.FOREST, Surface.GRASS, Surface.SWAMP},
     Surface.SWAMP: {Surface.SWAMP, Surface.FOREST},
-    Surface.WATER: {Surface.WATER, Surface.SAND, Surface.GRASS},
+    Surface.WATER: {Surface.WATER, Surface.SAND},
     Surface.SAND: {Surface.SAND, Surface.WATER, Surface.GRASS},
 }
 
