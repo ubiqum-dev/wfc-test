@@ -30,7 +30,7 @@ def generate(chunk_size: int = 10) -> Chunk:
 
 def main() -> None:
     pygame.init()
-    chunk_size: int = 50
+    chunk_size: int = 60
     WIDTH: int = chunk_size * 5
     HEIGHT: int = chunk_size * 5
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -44,8 +44,10 @@ def main() -> None:
 
     running = True
     first_run: bool = True
+    all_sprites = pygame.sprite.Group()
     while running:
-        all_sprites = pygame.sprite.Group()
+        clock.tick(120)
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
@@ -53,13 +55,14 @@ def main() -> None:
                 chunk: Chunk = Chunk(chunk_size)
                 first_run = False
 
-        for tile in chunk.tile_iter(collapsed=True):
-            all_sprites.add(tile)
+                for tile in chunk.tile_iter(collapsed=True):
+                    all_sprites.add(tile)
 
         if not chunk.is_ready():
             generation_step(chunk)
             all_sprites.draw(screen)
-            pygame.display.flip()
+
+        pygame.display.flip()
 
 
 if __name__ == '__main__':
